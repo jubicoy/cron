@@ -1,14 +1,12 @@
 package main
 
 import "os/exec"
-//import "io/ioutil"
 import "strings"
 import "time"
 import "fmt"
 import "os"
 import "github.com/robfig/cron"
 
-//var tasks []string
 
 func register_task(task_string string, c *cron.Cron) {
 	fmt.Printf("Registering task: %s\n", task_string)
@@ -29,12 +27,10 @@ func register_task(task_string string, c *cron.Cron) {
 func main() {
 	c := cron.New()
 	env_array := os.Environ()
-	fmt.Printf("%#+v\n", env_array)
 
 	for _, env := range env_array {
 		if strings.Contains(env, "TASK_") {
 			env_split := strings.Split(env, "=")
-			//tasks = append(tasks, env_split[1])
 			register_task(env_split[1], c)
 		}
 	}

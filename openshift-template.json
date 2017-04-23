@@ -1,0 +1,75 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "cron",
+        "annotations": {
+            "description": "Container to run cron-like scheduled processes.",
+            "tags": "instant-app,cron"
+        }
+    },
+    "objects": [
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "cron",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "cron"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "cron",
+                                "image": "jubicoy/cron",
+                                "resources": {},
+                                "env": [
+                                    {
+                                        "name": "TASK_INITIAL",
+                                        "value": "${TASK_INITIAL}"
+                                    }
+                                ],  
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            }
+        }
+    ],
+    "parameters": [
+        {
+            "name": "TASK_INITIAL",
+            "description": "First command to run. Additional commands can be scheduled later.",
+            "value": "* * * * *|echo I am task."
+        }
+    ],
+    "labels": {
+        "template": "cron"
+    }
+}
